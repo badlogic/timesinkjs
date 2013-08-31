@@ -21,11 +21,6 @@ app.factory("Reddit", function ($http) {
 
     Reddit.getThumbnail = function(item) {
         item.image = null;
-        // self post
-        if(!item.thumbnail.contains("http") && item.thumbnail.length > 0) {
-            item.thumbnail = null;
-            return;
-        }
 
         // imgur
         if(item.url.contains("imgur")) {
@@ -44,10 +39,19 @@ app.factory("Reddit", function ($http) {
         }
         // youtube
         else if(item.url.contains("youtube") || item.url.contains("youtu.be")) {
-            item.image = item.url;
-        } else if(item.media) {
-            console.log(JSON.stringify(item.media));
+            var id = parseYoutubeId(item.url);
+            if(id) {
+                item.thumbnail = "http://i1.ytimg.com/vi/" + id + "/mqdefault.jpg";
+                item.image = item.url;
+            }
         }
+
+        // self post
+        else if(!item.thumbnail.contains("http") && item.thumbnail.length > 0) {
+            item.thumbnail = null;
+            return;
+        }
+
         if(item.image) item.image = item.url;
     }
 
