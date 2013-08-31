@@ -84,12 +84,16 @@
                 <button class="btn" ng-click="addReddit=true"><i class="icon-plus"></i></button>
                 <select style="width: 110px;" ng-model="mode" ng-options="r for r in reddit.getModes()" ng-change="changeMode()"></select>
             </form>
-            <li><a href="https://github.com/badlogic/timesink">Github</a></li>
+            <li><a href="https://github.com/badlogic/timesinkjs" target="_blank">Github</a></li>
+            <li ng-show="reddit.isBusy()" style="margin-top: 4px;"><img src="img/loader.gif"/></li>
             <div style="margin-bottom: 5px">
                 <form class="navbar-form" ng-show="addReddit" ng-submit="addSubReddit()">
-                    <input type="text" ng-model="newReddit"/>
-                    <button class="btn" ng-click="addReddit=false">Cancel</button>
-                    <button class="btn" ng-click="addReddit=false;addSubReddit()">OK</button>
+                    <fieldset>
+                        <span style="color: #fff; font-size:20px;">r/</span>
+                        <input id="newreddit" type="text" ng-model="newReddit"/>
+                        <button class="btn" ng-click="addReddit=false">Cancel</button>
+                        <button class="btn" ng-click="addReddit=false;addSubReddit()">OK</button>
+                    </fieldset>
                 </form>
             </div>
         </ul>
@@ -99,7 +103,7 @@
 
 <div infinite-scroll='reddit.nextPage()'
      infinite-scroll-disabled='reddit.isBusy()'
-     infinite-scroll-distance='1'
+     infinite-scroll-distance='0'
      class="grid"
     masonry>
     <div class="item masonry-brick" ng-repeat='item in reddit.getItems()'>
@@ -111,4 +115,3 @@
         </div>
     </div>
 </div>
-<div ng-show='reddit.isBusy()'>Loading data...</div>
