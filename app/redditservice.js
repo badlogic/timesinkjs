@@ -1,7 +1,11 @@
 app.factory("Reddit", function ($http) {
     var defaultReddits = [
         {name: "frontpage", url: ""},
-        {name: "all", url: "r/all"}
+        {name: "all", url: "r/all"},
+        {name: "funny", url: "r/funny"},
+        {name: "pics", url: "r/pics"},
+        {name: "videos", url: "r/videos"},
+        {name: "fullmoviesonyoutube", url: "r/fullmoviesonyoutube"}
     ];
 
     var items = [];
@@ -66,7 +70,6 @@ app.factory("Reddit", function ($http) {
                 Reddit.getThumbnail(children[i].data);
                 items.push(children[i].data);
             }
-            console.log(items.length);
             after = "t3_" + items[items.length - 1].id;
             busy = false;
         });

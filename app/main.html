@@ -84,6 +84,7 @@
                 <button class="btn" ng-click="addReddit=true"><i class="icon-plus"></i></button>
                 <select style="width: 110px;" ng-model="mode" ng-options="r for r in reddit.getModes()" ng-change="changeMode()"></select>
             </form>
+            <li><a href="https://github.com/badlogic/timesink">Github</a></li>
             <div style="margin-bottom: 5px">
                 <form class="navbar-form" ng-show="addReddit" ng-submit="addSubReddit()">
                     <input type="text" ng-model="newReddit"/>
