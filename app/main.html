@@ -1,16 +1,116 @@
-<div>
-    <div infinite-scroll='reddit.nextPage()' infinite-scroll-disabled='reddit.isBusy()' infinite-scroll-distance='1'>
-        <div ng-repeat='item in reddit.getItems()'>
-            <span class='score'>{{item.score}}</span>
-      <img ng-src="{{item.thumbnail}}"></img>
-      <span class='title'>
-        <a ng-href='{{item.url}}' target='_blank'>{{item.title}}</a>
-      </span>
-            <small>by {{item.author}} -
-                <a ng-href='http://reddit.com{{item.permalink}}' target='_blank'>{{item.num_comments}} comments</a>
-            </small>
-            <div style='clear: both;'></div>
-        </div>
-        <div ng-show='reddit.isBusy()'>Loading data...</div>
+<style>
+    body {
+        background-color: rgba(0,0,0,.2);
+    }
+
+    a {
+        color: #08c;
+        text-decoration: none;
+    }
+
+    .grid {
+        width: 97%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 3em;
+    }
+
+    .masonry-brick {
+        width: 220px;
+        margin-bottom: 0.8em;
+        margin-left: 0.8em;
+
+
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        -ms-border-radius: 3px;
+        -o-border-radius: 3px;
+        border-radius: 3px;
+        -webkit-box-shadow: 0 1px 3px 0 rgba(0,0,0,0.33);
+        -moz-box-shadow: 0 1px 3px 0 rgba(0,0,0,0.33);
+        box-shadow: 0 1px 3px 0 rgba(0,0,0,0.33);
+        background: #fff;
+        width: 236px;
+    }
+
+    .masonry-brick img {
+        width: 90%;
+        max-width: 90%;
+        display: block;
+        margin-top: 0.5em;
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+
+    .details {
+        width: 90%;
+        max-width: 90%;
+        display: block;
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+        margin-left: 5%;
+        margin-right: 5%;
+        font-size: 13px;
+        line-height: 1.4;
+        font: normal 12px Roboto,arial,sans-serif;
+        color: #a7a7a7;
+    }
+
+    .details a {
+        color: #a7a7a7;
+    }
+
+    .title {
+        width: 90%;
+        max-width: 90%;
+        display: block;
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+        margin-left: 5%;
+        margin-right: 5%;
+
+        color: #404040;
+        font-size: 15px;
+        line-height: 1.4;
+        font: normal 13px Roboto,arial,sans-serif;
+    }
+
+    .masonry-brick.loaded {
+        display: block;
+    }
+
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2.5em;
+        background-color: #fff;
+        border-bottom: 2px solid rgba(0,0,0,0.33);
+        z-index: 666;
+    }
+
+    .logo {
+
+    }
+</style>
+
+<div class="header">
+<span class="logo">Timesink</span>
+</div>
+
+<div infinite-scroll='reddit.nextPage()'
+     infinite-scroll-disabled='reddit.isBusy()'
+     infinite-scroll-distance='1'
+     masonry options="{transitionDuration: 0}"
+     class="grid">
+    <div class="masonry-brick" ng-repeat='item in reddit.getItems()'>
+        <a href="{{item.url}}" target="blank"><img ng-show="item.thumbnail" ng-src="{{item.thumbnail}}"/></a>
+        <p class="title"><a href="{{item.url}}" target="_blank">{{item.title}}</a></p>
+        <p class="details">
+            <span>{{item.score}} pts</span> |
+            <span><a href="">{{item.num_comments}} comments</a></span>
+        </p>
     </div>
 </div>
+<div ng-show='reddit.isBusy()'>Loading data...</div>
