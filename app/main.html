@@ -15,11 +15,11 @@
         margin-top: 3em;
     }
 
-    .masonry-brick {
+    .item {
         width: 220px;
         margin-bottom: 0.8em;
         margin-left: 0.8em;
-
+        display: inline-block;
 
         -webkit-border-radius: 3px;
         -moz-border-radius: 3px;
@@ -30,27 +30,38 @@
         -moz-box-shadow: 0 1px 3px 0 rgba(0,0,0,0.33);
         box-shadow: 0 1px 3px 0 rgba(0,0,0,0.33);
         background: #fff;
-        width: 236px;
     }
 
-    .masonry-brick img {
+    .item .thumb img {
         width: 90%;
         max-width: 90%;
-        display: block;
+        max-height: 400px;
         margin-top: 0.5em;
         margin-left: 5%;
         margin-right: 5%;
     }
 
-    .details {
+    .item .title {
         width: 90%;
         max-width: 90%;
-        display: block;
         margin-top: 0.5em;
         margin-bottom: 0.5em;
         margin-left: 5%;
         margin-right: 5%;
-        font-size: 13px;
+
+        line-height: 1.4;
+        font: normal 13px Roboto,arial,sans-serif;
+        color: #404040;
+    }
+
+    .item .details {
+        width: 90%;
+        max-width: 90%;
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+        margin-left: 5%;
+        margin-right: 5%;
+
         line-height: 1.4;
         font: normal 12px Roboto,arial,sans-serif;
         color: #a7a7a7;
@@ -59,58 +70,40 @@
     .details a {
         color: #a7a7a7;
     }
-
-    .title {
-        width: 90%;
-        max-width: 90%;
-        display: block;
-        margin-top: 0.5em;
-        margin-bottom: 0.5em;
-        margin-left: 5%;
-        margin-right: 5%;
-
-        color: #404040;
-        font-size: 15px;
-        line-height: 1.4;
-        font: normal 13px Roboto,arial,sans-serif;
-    }
-
-    .masonry-brick.loaded {
-        display: block;
-    }
-
-    .header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 2.5em;
-        background-color: #fff;
-        border-bottom: 2px solid rgba(0,0,0,0.33);
-        z-index: 666;
-    }
-
-    .logo {
-
-    }
 </style>
-
-<div class="header">
-<span class="logo">Timesink</span>
+<div class="navbar navbar-fixed-top active navbar-inverse">
+    <div class="navbar-inner">
+        <a class="brand" ng-click="clear()">Timesink</a>
+        <ul class="nav">
+            <form class="navbar-form pull-left">
+                <select style="width: 110px;" ng-model="subreddit" ng-options="r.name for r in reddit.getSubReddits()" ng-change="changeReddit()"></select>
+                <button class="btn" ng-click="addReddit=true"><i class="icon-plus"></i></button>
+                <select style="width: 110px;" ng-model="mode" ng-options="r for r in reddit.getModes()" ng-change="changeMode()"></select>
+            </form>
+            <div style="margin-bottom: 5px">
+                <form class="navbar-form" ng-show="addReddit" ng-submit="addSubReddit()">
+                    <input type="text" ng-model="newReddit"/>
+                    <button class="btn" ng-click="addReddit=false">Cancel</button>
+                    <button class="btn" ng-click="addReddit=false;addSubReddit()">OK</button>
+                </form>
+            </div>
+        </ul>
+    </div>
 </div>
+
 
 <div infinite-scroll='reddit.nextPage()'
      infinite-scroll-disabled='reddit.isBusy()'
      infinite-scroll-distance='1'
-     masonry options="{transitionDuration: 0}"
-     class="grid">
-    <div class="masonry-brick" ng-repeat='item in reddit.getItems()'>
-        <a href="{{item.url}}" target="blank"><img ng-show="item.thumbnail" ng-src="{{item.thumbnail}}"/></a>
+     class="grid"
+     masonry options="{transitionDuration: 0}">
+    <div class="item masonry-brick" ng-repeat='item in reddit.getItems()'>
+        <a class="thumb" ng-show="item.thumbnail" href="{{item.url}}" target="blank"><img ng-src="{{item.thumbnail}}"/></a>
         <p class="title"><a href="{{item.url}}" target="_blank">{{item.title}}</a></p>
-        <p class="details">
+        <div class="details">
             <span>{{item.score}} pts</span> |
-            <span><a href="">{{item.num_comments}} comments</a></span>
-        </p>
+            <span><a href="http://www.reddit.com/{{item.permalink}}" target="_blank">{{item.num_comments}} comments</a></span>
+        </div>
     </div>
 </div>
 <div ng-show='reddit.isBusy()'>Loading data...</div>

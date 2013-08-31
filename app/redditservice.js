@@ -1,16 +1,28 @@
 app.factory("Reddit", function ($http) {
+    var defaultReddits = [
+        {name: "frontpage", url: ""},
+        {name: "all", url: "r/all"}
+    ];
+
     var items = [];
     var busy = false;
     var after = '';
-    var subreddit = '';
-    var mode = '';
+    var subreddits =  localStorage.getItem("subreddits");
+    if(subreddits == null) {
+        subreddits = defaultReddits.slice(0);
+    } else {
+        subreddits = JSON.parse(subreddits);
+    }
+    var subreddit = subreddits[0];
+    var modes = [ "hot", "new", "rising", "controversial", "top"];
+    var mode = modes[0];
 
     var Reddit = {};
 
     Reddit.getThumbnail = function(item) {
         item.image = null;
         // self post
-        if(!item.thumbnail.contains("http")) {
+        if(!item.thumbnail.contains("http") && item.thumbnail.length > 0) {
             item.thumbnail = null;
             return;
         }
@@ -43,13 +55,14 @@ app.factory("Reddit", function ($http) {
         if (busy) return;
         busy = true;
 
-        var url = "http://api.reddit.com/" + subreddit + "/" + mode + "?after=" + after + "&jsonp=JSON_CALLBACK";
+        var url = "http://api.reddit.com/" + subreddit.url + "/" + mode + "?after=" + after + "&jsonp=JSON_CALLBACK";
         $http.jsonp(url).success(function (data) {
             var children = data.data.children;
             for (var i = 0; i < children.length; i++) {
                 Reddit.getThumbnail(children[i].data);
                 items.push(children[i].data);
             }
+            console.log(items.length);
             after = "t3_" + items[items.length - 1].id;
             busy = false;
         });
@@ -59,9 +72,60 @@ app.factory("Reddit", function ($http) {
         return items;
     }
 
+    Reddit.getSubReddits = function() {
+        return subreddits;
+    }
+
+    Reddit.getModes = function() {
+        return modes;
+    }
+
+    Reddit.setMode = function(m) {
+        mode = m;
+        Reddit.load();
+    }
+
+    Reddit.setSubReddit = function(r) {
+        if(!r.name) {
+            for(var i = 0; i < subreddits.length; i++) {
+                if(subreddits[i].name === r) {
+                    r = subreddits[i];
+                }
+            }
+        }
+        if(!subreddit) return;
+        subreddit = r;
+        Reddit.load();
+    }
+
+    Reddit.getSubReddit = function() {
+        return subreddit;
+    }
+
     Reddit.isBusy = function() {
         return busy;
     }
 
+    Reddit.load = function() {
+        items = []
+        after = "";
+        busy = false;
+        Reddit.nextPage();
+    }
+
+    Reddit.addSubReddit = function(r) {
+        if(!r || r.trim().length == 0) return;
+
+        for(var i = 0; i < subreddits.length; i++) {
+            if(subreddits[i].name === r) return;
+        }
+        subreddits.push({name: r, url: "r/" + r});
+        localStorage.setItem("subreddits", JSON.stringify(subreddits));
+    }
+
+    Reddit.clear = function() {
+        subreddits = defaultReddits;
+        localStorage.removeItem("subreddits");
+    }
     return Reddit;
 });
