@@ -103,7 +103,7 @@
     masonry>
     <div class="item masonry-brick" ng-repeat='item in reddit.getItems()'>
         <a class="thumb" ng-show="item.thumbnail" href="{{item.url}}" target="blank"><img ng-src="{{item.thumbnail}}"/></a>
-        <p class="title"><a href="{{item.url}}" target="_blank">{{item.title}}</a></p>
+        <p class="title"><a href="{{item.url}}" target="_blank" ng-bind-html-unsafe="item.title"></a></p>
         <div class="details">
             <span>{{item.score}} pts</span> |
             <span><a href="http://www.reddit.com/{{item.permalink}}" target="_blank">{{item.num_comments}} comments</a></span>
