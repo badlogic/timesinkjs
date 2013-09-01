@@ -59,11 +59,13 @@ app.factory("Reddit", function ($http) {
         if(item.image) item.image = item.url;
     }
 
-    Reddit.nextPage = function (callback) {
+    Reddit.nextPage = function (numItems) {
         if (busy) return;
         busy = true;
 
-        var url = "http://api.reddit.com/" + subreddit.url + "/" + mode + "?after=" + after + "&jsonp=JSON_CALLBACK";
+        if(!numItems) numItems = 10;
+
+        var url = "http://api.reddit.com/" + subreddit.url + "/" + mode + "?limit=" + numItems + "&after=" + after + "&jsonp=JSON_CALLBACK";
         $http.jsonp(url).success(function (data) {
             var children = data.data.children;
             for (var i = 0; i < children.length; i++) {
@@ -117,7 +119,7 @@ app.factory("Reddit", function ($http) {
         items = []
         after = "";
         busy = false;
-        Reddit.nextPage();
+        Reddit.nextPage(20);
     }
 
     Reddit.addSubReddit = function(r) {
